@@ -1,0 +1,65 @@
+{% extends "website/dashboard/dashboard.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+
+<div class="container mt-2 w-100 mx-auto d-flex align-items-center flex-column">
+
+    <h1 class="mb-4">Orari di Apertura Management</h1>
+
+    {% for opening_hours_item in opening_hours_data %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2 class="card-title">Orari di Apertura</h2>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Giorno della Settimana: {{ opening_hours_item.opening_hours.get_weekday_display }}</p>
+                <p class="card-text">Orario di Apertura: {{ opening_hours_item.opening_hours.opening_time }}</p>
+                <p class="card-text">Orario di Chiusura: {{ opening_hours_item.opening_hours.closing_time }}</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ opening_hours_item.opening_hours.id }}">
+                    Modifica
+                </button>
+                <form action="{% url 'opening_hours_management:delete_opening_hours' opening_hours_item.opening_hours.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Elimina
+                    </button>
+                </form>
+            </div>
+            <div class="collapse" id="editForm-{{ opening_hours_item.opening_hours.id }}">
+                <div class="card-body">
+                    <form action="{% url 'opening_hours_management:update_opening_hours' opening_hours_item.opening_hours.id %}" method="post">
+                        {% csrf_token %}
+                        {{ opening_hours_item.form }}
+                        <button type="submit" class="btn btn-primary">Salva modifiche</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addForm">
+        Aggiungi Orario di Apertura
+    </button>
+
+    <div class="modal fade" id="addForm" tabindex="-1" aria-labelledby="addFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFormLabel">Aggiungi Orario di Apertura</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'opening_hours_management:add_opening_hours' %}" method="post">
+                        {% csrf_token %}
+                        {{ opening_hours_form }}
+                        <button type="submit" class="btn btn-primary">Aggiungi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

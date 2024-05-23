@@ -47,5 +47,5 @@ class OpeningHoursForm(forms.ModelForm):
         closing_time = cleaned_data.get('closing_time')
         if opening_time and closing_time:
             if closing_time <= opening_time:
-                raise forms.ValidationError(_('L\'orario di chiusura deve essere successivo all\'orario di apertura.'))
+                raise forms.ValidationError(_('L\'orario di chiusura deve essere successivo all\'orario di apertura.'), code='invalid_closing_time')
         return cleaned_data

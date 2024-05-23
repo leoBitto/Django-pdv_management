@@ -1,0 +1,63 @@
+{% extends "website/dashboard/dashboard.html" %}
+{% load static %}
+{% block dashboard_app %}
+
+<div class="container mt-2 w-100 mx-auto d-flex align-items-center flex-column">
+
+    <h1 class="mb-4">PDV Management</h1>
+
+    {% for pdv_item in pdv_data %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2 class="card-title">{{ pdv_item.pdv.name }}</h2>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Address: {{ pdv_item.pdv.address }}</p>
+                <p class="card-text">Phone: {{ pdv_item.pdv.phone }}</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ pdv_item.pdv.id }}">
+                    Modifica
+                </button>
+                <form action="{% url 'pdv_management:delete_pdv' pdv_item.pdv.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Elimina
+                    </button>
+                </form>
+            </div>
+            <div class="collapse" id="editForm-{{ pdv_item.pdv.id }}">
+                <div class="card-body">
+                    <form action="{% url 'pdv_management:update_pdv' pdv_item.pdv.id %}" method="post">
+                        {% csrf_token %}
+                        {{ pdv_item.form }}
+                        <button type="submit" class="btn btn-primary">Salva modifiche</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addForm">
+        Aggiungi PDV
+    </button>
+
+    <div class="modal fade" id="addForm" tabindex="-1" aria-labelledby="addFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFormLabel">Aggiungi PDV</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'pdv_management:add_pdv' %}" method="post">
+                        {% csrf_token %}
+                        {{ pdv_form }}
+                        <button type="submit" class="btn btn-primary">Aggiungi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock dashboard_app %}
