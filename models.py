@@ -2,12 +2,18 @@ from django.core.exceptions import ValidationError
 import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from django.core.validators import RegexValidator
 class PDV(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    address = models.TextField()
-    phone = models.CharField(max_length=20, blank=True)
+    address = models.CharField(max_length=100)
+    phone = models.CharField(
+        max_length=20,
+        blank=True,
+        validators=[RegexValidator(
+            regex=r'^\d{10}$',
+            message=_("Il numero di telefono deve contenere 10 cifre.")
+        )])
     code = models.CharField(max_length=20, unique=True, blank=True, default="")
 
     def generate_code(self):

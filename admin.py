@@ -3,8 +3,9 @@ from .models import PDV, OpeningHours
 
 @admin.register(PDV)
 class PDVAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'phone', 'code')
-    search_fields = ('name', 'address', 'phone', 'code')
+    exclude=('code',)
+    list_display = ('name', 'address', 'phone', 'code', 'id')
+    search_fields = ('name', 'address', 'phone')
 
 @admin.register(OpeningHours)
 class OpeningHoursAdmin(admin.ModelAdmin):
