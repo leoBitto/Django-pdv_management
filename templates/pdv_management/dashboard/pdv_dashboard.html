@@ -1,34 +1,35 @@
 {% extends "website/dashboard/dashboard.html" %}
 {% load static %}
+
 {% block dashboard_app %}
 
 <div class="container mt-2 w-100 mx-auto d-flex align-items-center flex-column">
 
     <h1 class="mb-4">PDV Management</h1>
 
-    {% for pdv_item in pdv_data %}
+    {% for pdv, pdv_info in pdv_data.items %}
         <div class="card mb-3">
             <div class="card-header">
-                <h2 class="card-title">{{ pdv_item.pdv.name }}</h2>
+                <h2 class="card-title">{{ pdv.name }}</h2>
             </div>
             <div class="card-body">
-                <p class="card-text">Address: {{ pdv_item.pdv.address }}</p>
-                <p class="card-text">Phone: {{ pdv_item.pdv.phone }}</p>
-                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ pdv_item.pdv.id }}">
+                <p class="card-text">Address: {{ pdv.address }}</p>
+                <p class="card-text">Phone: {{ pdv.phone }}</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ pdv.id }}">
                     Modifica
                 </button>
-                <form action="{% url 'pdv_management:delete_pdv' pdv_item.pdv.id %}" method="post" class="d-inline">
+                <form action="{% url 'pdv_management:pdv_delete' pdv.id %}" method="post" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">
                         Elimina
                     </button>
                 </form>
             </div>
-            <div class="collapse" id="editForm-{{ pdv_item.pdv.id }}">
+            <div class="collapse" id="editForm-{{ pdv.id }}">
                 <div class="card-body">
-                    <form action="{% url 'pdv_management:update_pdv' pdv_item.pdv.id %}" method="post">
+                    <form action="{% url 'pdv_management:pdv_update' pdv.id %}" method="post">
                         {% csrf_token %}
-                        {{ pdv_item.form }}
+                        {{ pdv_info.pdv_form }}
                         <button type="submit" class="btn btn-primary">Salva modifiche</button>
                     </form>
                 </div>

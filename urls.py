@@ -5,10 +5,12 @@ app_name = 'pdv_management'
 
 urlpatterns = [
     path('', views.pdv_dashboard, name='pdv_dashboard'),
-    path('<uuid:pdv_id>/', views.pdv_update_delete, name='pdv_update_delete'),
-    path('add_pdv/', views.pdv_dashboard, name='pdv_add'),
+    path('delete/<uuid:pdv_id>/', views.pdv_delete, name='pdv_delete'),
+    path('update/<uuid:pdv_id>/', views.pdv_update, name='pdv_update'),
+    path('add_pdv/', views.pdv_add, name='pdv_add'),
     
     path('opening-hours/', views.opening_hours_dashboard, name='opening_hours_dashboard'),
-    path('opening-hours/<int:pk>/', views.opening_hours_update_delete, name='opening_hours_update_delete'),
-    path('opening-hours/add/', views.opening_hours_create, name='opening_hours_add'),
+    path('opening-hours/delete/<int:id>/', views.opening_hours_delete, name='opening_hours_delete'),
+    path('opening-hours/update/<int:id>/', views.opening_hours_update, name='opening_hours_update'),
+    path('opening-hours/add/', views.opening_hours_add, name='opening_hours_add'),
 ]

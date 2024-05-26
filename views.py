@@ -16,15 +16,6 @@ def pdv_dashboard(request):
             'pdv_form': PDVForm(instance=pdv),
         }
 
-    if request.method == 'POST':
-        pdv_form = PDVForm(request.POST)
-        if pdv_form.is_valid():
-            pdv_form.save()
-            messages.success(request, 'PDV aggiunto con successo.')
-            return redirect('pdv_management:pdv_dashboard')
-        else:
-            messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
-
     context = {
         'pdv_data': pdv_data,
         'pdv_form': pdv_form,
@@ -33,33 +24,58 @@ def pdv_dashboard(request):
     return render(request, 'pdv_management/pdv_dashboard.html', context)
 
 @login_required
-def pdv_update_delete(request, pdv_id):
-    pdv = get_object_or_404(PDV, id=pdv_id)
+def pdv_delete(request, pdv_id):
+    pass
+    #pdv = get_object_or_404(PDV, id=pdv_id)
+    #if request.method == 'POST':
+    #    pdv.delete()
+    #    messages.success(request, 'PDV eliminato con successo.')
+    #else:
+    #    messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+    #return redirect('pdv_management:pdv_dashboard')
 
-    if request.method == 'POST':
-        pdv_form = PDVForm(request.POST, instance=pdv)
-        if pdv_form.is_valid():
-            pdv_form.save()
-            messages.success(request, 'PDV aggiornato con successo.')
-            return redirect('pdv_management:pdv_dashboard')
-        elif 'delete' in request.POST:
-            pdv.delete()
-            messages.success(request, 'PDV eliminato con successo.')
-            return redirect('pdv_management:pdv_dashboard')
-        else:
-            messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
-    else:
-        pdv_form = PDVForm(instance=pdv)
+@login_required
+def pdv_update(request, pdv_id):
+    pass
+    #pdv = get_object_or_404(PDV, id=pdv_id)
+#
+    #if request.method == 'POST':
+    #    pdv_form = PDVForm(request.POST, instance=pdv)
+    #    if pdv_form.is_valid():
+    #        pdv_form.save()
+    #        messages.success(request, 'PDV aggiornato con successo.')
+    #        return redirect('pdv_management:pdv_dashboard')
+    #    else:
+    #        messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+    #else:
+    #    pdv_form = PDVForm(instance=pdv)
+#
+    #context = {
+    #    'pdv': pdv,
+    #    'pdv_form': pdv_form,
+    #}
+#
+    #return render(request, 'pdv_management/pdv_dashboard.html', context)
 
-    context = {
-        'pdv': pdv,
-        'pdv_form': pdv_form,
-    }
-
-    return render(request, 'pdv_management/pdv_dashboard.html', context)
-
-
-
+@login_required
+def pdv_add(request):
+    pass
+    #if request.method == 'POST':
+    #    pdv_form = PDVForm(request.POST)
+    #    if pdv_form.is_valid():
+    #        pdv_form.save()
+    #        messages.success(request, 'PDV aggiunto con successo.')
+    #        return redirect('pdv_management:pdv_dashboard')
+    #    else:
+    #        messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+    #else:
+    #    form = PDVForm()
+#
+    #context = {
+    #    'form': form,
+    #}
+    #return render(request, 'pdv_management/pdv_dashboard.html', context)
+    
 @login_required
 def opening_hours_dashboard(request):
     opening_hours_list = OpeningHours.objects.all()
@@ -75,7 +91,7 @@ def opening_hours_dashboard(request):
     return render(request, 'pdv_management/opening_hours_dashboard.html', context)
 
 @login_required
-def opening_hours_create(request):
+def opening_hours_add(request):
     if request.method == 'POST':
         form = OpeningHoursForm(request.POST)
         if form.is_valid():
@@ -88,12 +104,23 @@ def opening_hours_create(request):
         form = OpeningHoursForm()
 
     context = {
-        'form': form,
+        'opening_hours_form': form,
     }
     return render(request, 'pdv_management/opening_hours_dashboard.html', context)
 
 @login_required
-def opening_hours_update_delete(request, opening_hours_id):
+def opening_hours_delete(request, opening_hours_id):
+    opening_hours = get_object_or_404(OpeningHours, id=opening_hours_id)
+
+    if request.method == 'POST':
+        opening_hours.delete()
+        messages.success(request, 'Orario di apertura eliminato con successo.')
+    else:
+        messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+    return render(request, 'pdv_management/opening_hours_dashboard.html')
+
+@login_required
+def opening_hours_update(request, opening_hours_id):
     opening_hours = get_object_or_404(OpeningHours, id=opening_hours_id)
 
     if request.method == 'POST':
@@ -101,10 +128,6 @@ def opening_hours_update_delete(request, opening_hours_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Orario di apertura aggiornato con successo.')
-            return redirect('pdv_management:opening_hours_dashboard')
-        elif 'delete' in request.POST:
-            opening_hours.delete()
-            messages.success(request, 'Orario di apertura eliminato con successo.')
             return redirect('pdv_management:opening_hours_dashboard')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
@@ -115,6 +138,6 @@ def opening_hours_update_delete(request, opening_hours_id):
         'opening_hours': opening_hours,
         'form': form,
     }
-    return render(request, 'pdv_management/opening_hours_dashboard.html', context)
 
+    return render(request, 'pdv_management/opening_hours_dashboard.html', context)
 
