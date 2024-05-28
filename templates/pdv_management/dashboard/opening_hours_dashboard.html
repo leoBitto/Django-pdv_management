@@ -5,40 +5,9 @@
 
 <div class="container mt-2 w-100 mx-auto d-flex align-items-center flex-column">
 
-    <h1 class="mb-4">Orari di Apertura Management</h1>
+    <h2 class="mb-2">Orari di Apertura Management</h2>
 
-    {% for opening_hours_item in opening_hours_data %}
-        <div class="card mb-3">
-            <div class="card-header">
-                <h2 class="card-title">Orari di Apertura</h2>
-            </div>
-            <div class="card-body">
-                <p class="card-text">Giorno della Settimana: {{ opening_hours_item.opening_hours.get_weekday_display }}</p>
-                <p class="card-text">Orario di Apertura: {{ opening_hours_item.opening_hours.opening_time }}</p>
-                <p class="card-text">Orario di Chiusura: {{ opening_hours_item.opening_hours.closing_time }}</p>
-                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ opening_hours_item.opening_hours.id }}">
-                    Modifica
-                </button>
-                <form action="{% url 'pdv_management:opening_hours_delete' opening_hours_item.opening_hours.id %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        Elimina
-                    </button>
-                </form>
-            </div>
-            <div class="collapse" id="editForm-{{ opening_hours_item.opening_hours.id }}">
-                <div class="card-body">
-                    <form action="{% url 'pdv_management:opening_hours_update' opening_hours_item.opening_hours.id %}" method="post">
-                        {% csrf_token %}
-                        {{ opening_hours_item.form }}
-                        <button type="submit" class="btn btn-primary">Salva modifiche</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-
-    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addForm">
+    <button class="btn btn-primary m-2" type="button" data-bs-toggle="modal" data-bs-target="#addForm">
         Aggiungi Orario di Apertura
     </button>
 
@@ -53,12 +22,46 @@
                     <form action="{% url 'pdv_management:opening_hours_add' %}" method="post">
                         {% csrf_token %}
                         {{ opening_hours_form }}
-                        <button type="submit" class="btn btn-primary">Aggiungi</button>
+                        <button type="submit" class="btn btn-primary mt-3">Aggiungi</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+
+    {% for pdv, opening_hours_list in opening_hours_data.items %}
+        <h3 class="mb-3">Orari di Apertura di {{ pdv }}</h3>
+        {% for entry in opening_hours_list %}
+        <div class="card mb-3 w-100">
+            <div class="card-body py-1 px-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="card-text mb-0">{{ entry.opening_hours }}</p>
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ entry.opening_hours.id }}">
+                            Modifica
+                        </button>
+                        <form action="{% url 'pdv_management:opening_hours_delete' entry.opening_hours.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">
+                                Elimina
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="collapse mt-2" id="editForm-{{ entry.opening_hours.id }}">
+                    <form action="{% url 'pdv_management:opening_hours_update' entry.opening_hours.id %}" method="post">
+                        {% csrf_token %}
+                        {{ entry.opening_hours_form }}
+                        <button type="submit" class="btn btn-primary mt-2">Salva modifiche</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+
+
 
 </div>
 

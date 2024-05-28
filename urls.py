@@ -10,7 +10,7 @@ urlpatterns = [
     path('add_pdv/', views.pdv_add, name='pdv_add'),
     
     path('opening-hours/', views.opening_hours_dashboard, name='opening_hours_dashboard'),
-    path('opening-hours/delete/<int:id>/', views.opening_hours_delete, name='opening_hours_delete'),
-    path('opening-hours/update/<int:id>/', views.opening_hours_update, name='opening_hours_update'),
+    path('opening-hours/delete/<int:opening_hours_id>/', views.opening_hours_delete, name='opening_hours_delete'),
+    path('opening-hours/update/<int:opening_hours_id>/', views.opening_hours_update, name='opening_hours_update'),
     path('opening-hours/add/', views.opening_hours_add, name='opening_hours_add'),
 ]
