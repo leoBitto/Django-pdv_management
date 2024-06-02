@@ -10,7 +10,7 @@
     <button class="btn btn-primary m-2" type="button" data-bs-toggle="modal" data-bs-target="#addForm">
         Aggiungi Orario di Apertura
     </button>
-
+    
     <div class="modal fade" id="addForm" tabindex="-1" aria-labelledby="addFormLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -21,13 +21,35 @@
                 <div class="modal-body">
                     <form action="{% url 'pdv_management:opening_hours_add' %}" method="post">
                         {% csrf_token %}
-                        {{ opening_hours_form }}
+                        <div class="mb-3">
+                            <label for="{{ opening_hours_form.pdv.id_for_label }}" class="form-label">{{ opening_hours_form.pdv.label }}</label>
+                            {{ opening_hours_form.pdv }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ opening_hours_form.weekday.id_for_label }}" class="form-label">{{ opening_hours_form.weekday.label }}</label>
+                            {{ opening_hours_form.weekday }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ opening_hours_form.opening_time.id_for_label }}" class="form-label">{{ opening_hours_form.opening_time.label }}</label>
+                                {{ opening_hours_form.opening_time }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ opening_hours_form.closing_time.id_for_label }}" class="form-label">{{ opening_hours_form.closing_time.label }}</label>
+                                {{ opening_hours_form.closing_time }}
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="{{ opening_hours_form.is_closed.id_for_label }}" name="{{ opening_hours_form.is_closed.html_name }}">
+                            <label for="{{ opening_hours_form.is_closed.id_for_label }}" class="form-check-label">{{ opening_hours_form.is_closed.label }}</label>
+                        </div>
                         <button type="submit" class="btn btn-primary mt-3">Aggiungi</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    
 
 
     {% for pdv, opening_hours_list in opening_hours_data.items %}

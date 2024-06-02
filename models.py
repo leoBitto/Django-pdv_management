@@ -47,6 +47,7 @@ class OpeningHours(models.Model):
     weekday = models.CharField(max_length=10, choices=WEEKDAY_CHOICES, verbose_name=_("Giorno della settimana"))
     opening_time = models.TimeField(verbose_name=_("Orario di apertura"))
     closing_time = models.TimeField(verbose_name=_("Orario di chiusura"))
+    is_closed = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("Orario di apertura")
