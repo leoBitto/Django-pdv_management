@@ -1,0 +1,16 @@
+<!-- pdv_management/accordion.html -->
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center collapsed bg-dark text-white" data-bs-toggle="collapse" href="#pdvAccordion" role="button" aria-expanded="false" aria-controls="pdvAccordion">
+        <i class="fas fa-store me-2"></i> <span class="ms-1">Gestione PDV</span>
+    </a>
+    <div class="collapse" id="pdvAccordion">
+        <ul class="nav flex-column ms-3">
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center text-black" href="{% url 'pdv_management:pdv_dashboard' %}">
+                    <i class="fas fa-shop me-2"></i> Punti Di Vendita
+                </a>
+            </li>
+            <!-- Aggiungi altri link per le pagine di pdv_management se necessario -->
+        </ul>
+    </div>
+</li>

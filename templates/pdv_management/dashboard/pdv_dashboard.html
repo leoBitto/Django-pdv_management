@@ -1,66 +1,144 @@
-{% extends "website/dashboard/dashboard.html" %}
+{% extends "backoffice/backoffice_base.html" %}
 {% load static %}
 
 {% block dashboard_app %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h4">Gestione PDV</h2>
+        <button class="btn bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#createPdvForm" aria-expanded="false" aria-controls="createPdvForm">
+            Aggiungi PDV
+        </button>
+    </div>
 
-<div class="container mt-2 w-100 mx-auto d-flex align-items-center flex-column">
-
-    <h2 class="mb-2">PDV Management</h2>
-
-    
-    <button class="btn btn-primary m-2" type="button" data-bs-toggle="modal" data-bs-target="#addForm">
-        Aggiungi PDV
-    </button>
-
-    <div class="modal fade" id="addForm" tabindex="-1" aria-labelledby="addFormLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addFormLabel">Aggiungi PDV</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{% url 'pdv_management:pdv_add' %}" method="post">
+    <!-- Form per aggiungere un nuovo PDV -->
+    <div class="mb-4">
+        <div class="collapse mt-3" id="createPdvForm">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
                         {% csrf_token %}
-                        {{ pdv_form }}
-                        <button type="submit" class="btn btn-primary mt-2">Aggiungi</button>
+                        {{ pdv_form.as_p }}
+                        <button type="submit" name="add_pdv" class="btn bg-dark text-white">Aggiungi PDV</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    {% for pdv, pdv_info in pdv_data.items %}
-        <div class="card mb-3 w-100">
-            <div class="card-header">
-                <h2 class="card-title">{{ pdv.name }}</h2>
-            </div>
-            <div class="card-body">
-                <p class="card-text">Address: {{ pdv.address }}</p>
-                <p class="card-text">Phone: {{ pdv.phone }}</p>
-                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#editForm-{{ pdv.id }}">
-                    Modifica
-                </button>
-                <form action="{% url 'pdv_management:pdv_delete' pdv.id %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        Elimina
-                    </button>
-                </form>
-            </div>
-            <div class="collapse" id="editForm-{{ pdv.id }}">
-                <div class="card-body">
-                    <form action="{% url 'pdv_management:pdv_update' pdv.id %}" method="post">
-                        {% csrf_token %}
-                        {{ pdv_info.pdv_form }}
-                        <button type="submit" class="btn btn-primary mt-3">Salva modifiche</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
+    <!-- Campo di ricerca -->
+    <div class="m-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cerca PDV...">
+    </div>
 
+    <!-- Tabella dei PDV -->
+    <div class="mt-4">
+        <h3 class="h5">Lista PDV</h3>
+        <table id="pdvTable" class="table table-bordered w-100">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Indirizzo</th>
+                    <th>Telefono</th>
+                    <th>Codice</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pdv_info in pdv_data %}
+                    <tr class="pdv-item">
+                        <td>{{ pdv_info.pdv_instance.name }}</td>
+                        <td>{{ pdv_info.pdv_instance.address }}</td>
+                        <td>{{ pdv_info.pdv_instance.phone }}</td>
+                        <td>{{ pdv_info.pdv_instance.code }}</td>
+                        <td>
+                            <!-- Form per eliminare un PDV -->
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="pdv_id" value="{{ pdv_info.pdv_instance.id }}">
+                                <button type="submit" name="delete_pdv" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
 
+                            <!-- Pulsante per mostrare il form di modifica -->
+                            <button class="btn bg-dark text-white btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#updateForm-{{ pdv_info.pdv_instance.id }}" aria-expanded="false" aria-controls="updateForm-{{ pdv_info.pdv_instance.id }}">
+                                Modifica
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <!-- Form per aggiornare un PDV -->
+                            <div class="collapse mt-3" id="updateForm-{{ pdv_info.pdv_instance.id }}">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            {{ pdv_info.pdv_form.as_p }}
+                                            <input type="hidden" name="pdv_id" value="{{ pdv_info.pdv_instance.id }}">
+                                            <button type="submit" name="update_pdv" class="btn bg-dark text-white">Salva Modifiche</button>
+                                        </form>
+
+                                        <!-- Form per aggiungere orari di apertura -->
+                                        <h4 class="mt-4">Aggiungi Orario di Apertura</h4>
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            {{ opening_hours_form.as_p }}
+                                            <input type="hidden" name="pdv_id" value="{{ pdv_info.pdv_instance.id }}">
+                                            <button type="submit" name="add_opening_hours" class="btn bg-dark text-white">Aggiungi Orario</button>
+                                        </form>
+
+                                        <!-- Lista degli orari di apertura del PDV selezionato -->
+                                        <h4 class="mt-4">Orari di Apertura</h4>
+                                        <ul class="list-group">
+                                            {% for oh in pdv_info.opening_hours %}
+                                                <li class="list-group-item">
+                                                    <p><strong>Giorno:</strong> {{ oh.opening_hours.weekday }}</p>
+                                                    <p><strong>Orario Apertura:</strong> {{ oh.opening_hours.opening_time }}</p>
+                                                    <p><strong>Orario Chiusura:</strong> {{ oh.opening_hours.closing_time }}</p>
+                                                    <p><strong>Chiuso:</strong> {{ oh.opening_hours.is_closed }}</p>
+                                                    <!-- Form per eliminare un orario di apertura -->
+                                                    <form method="post" style="display:inline;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="opening_hours_id" value="{{ oh.opening_hours.id }}">
+                                                        <button type="submit" name="delete_opening_hours" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item">Nessun orario di apertura disponibile.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">Nessun PDV trovato.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
+<!-- Script di ricerca -->
+<script>
+    $(document).ready(function () {
+        $('#searchInput').on('keyup', function () {
+            var query = $(this).val().toLowerCase();
+            $('.pdv-item').each(function () {
+                var pdvName = $(this).find('td').first().text().toLowerCase(); // Nome del PDV
+                if (pdvName.includes(query)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
 {% endblock dashboard_app %}
